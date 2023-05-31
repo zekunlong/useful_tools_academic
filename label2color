@@ -1,0 +1,41 @@
+import os
+import cv2
+import numpy as np
+from PIL import Image
+
+label_to_color = {
+         0: [0, 0, 0],
+         1: [6, 0, 85],
+         2: [255, 106, 0],
+         3: [255, 0, 0],
+         4: [241, 215, 126],
+         5: [22, 37, 255],
+         6: [99, 227, 152],
+         7: [74, 108, 136],
+         8: [154, 10, 255],
+         9: [177, 206, 70],
+            }
+def label2rgb(image, label_to_color):
+    image=image[:,:,0]
+    h, w = image.shape
+    im = np.zeros((h, w, 3))
+    for i in range(h):
+        for j in range(w):
+            im[i, j, :] = label_to_color[image[i, j]]
+    return im.astype(int)
+
+if __name__ == "__main__":
+    file_path = "./2"
+    output_path = "./m0_rgb"
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+    file_list = os.listdir(file_path)
+
+    for file in file_list:
+        image_path = os.path.join(file_path, file)
+        print(image_path)
+        # image = Image.open(image_path)
+        # label_image = np.array(image)
+        label_image = cv2.imread(image_path)
+        visual_image = label2rgb(label_image, label_to_color)
+        cv2.imwrite(os.path.join(output_path,file ), visual_image)
